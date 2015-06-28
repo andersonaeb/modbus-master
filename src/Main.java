@@ -1,11 +1,17 @@
+import core.Controller;
 import gui.MainWindow;
-import modbus.Master;
 
 public class Main {
 
 	public static void main(String[] args) {
 
-		MainWindow mainWindow = new MainWindow();
-
+		final MainWindow mainWindow = new MainWindow();
+		
+		mainWindow.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    	Controller.getInstance().close();
+		    }
+		});
 	}
 }

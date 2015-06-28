@@ -3,6 +3,9 @@ package core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.TooManyListenersException;
 
 import gnu.io.*;
 
@@ -10,6 +13,8 @@ public class Communicator implements SerialPortEventListener {
 
 	
 	final static int TIMEOUT = 2000;
+	
+	final static int NEW_LINE_ASCII = 10;
 	
 	/*
 	 * Port Configuration
@@ -25,12 +30,16 @@ public class Communicator implements SerialPortEventListener {
     
     private OutputStream output = null;
     
+    private String response = null;
+    
 	/*
 	 * Options
 	 */
 	private String portName;
 	
 	private int baudRate;
+	
+	private boolean connected = false;
 	
 
 	/**
@@ -65,6 +74,8 @@ public class Communicator implements SerialPortEventListener {
 			this.serialPort.setSerialPortParams(this.baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 			
 			successful = true;
+			
+			this.connected = true;
 			
 			System.out.println(this.portName + " opened successfully.");
 			
@@ -103,6 +114,30 @@ public class Communicator implements SerialPortEventListener {
 	}
 	
 	/**
+	 * Event listener for the serial port that knows when data is received
+	 */
+    public void initListener()
+    {
+        try
+        {
+            this.serialPort.addEventListener(this);
+            this.serialPort.notifyOnDataAvailable(true);
+        }
+        catch (TooManyListenersException e)
+        {
+        	e.printStackTrace();
+        }
+    }
+	
+    /**
+     * Get status connection
+     * @return
+     */
+    public boolean getConnected() {
+    	return this.connected;
+    }
+    
+	/**
 	 * Disconnect the serial port
 	 */
 	public void disconnect()
@@ -125,15 +160,53 @@ public class Communicator implements SerialPortEventListener {
         	e.printStackTrace();
         }
     }
-    
-	public void writeData() {
+   
+	/**
+	 * Write serial data
+	 * @param data
+	 */
+	public void writeData(String data) {
+		try {
+			this.output.write(data.getBytes());
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	}
+	/*
+	 * Processing on the data it reads
+	 */
+    public void serialEvent(SerialPortEvent evt) {
 
-	@Override
-	public void serialEvent(SerialPortEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
+        if (evt.getEventType() == SerialPortEvent.DATA_AVAILABLE)
+        {
+        	byte[] buffer = new byte[1024];
+        	int data, size;
+        	String response;
+            
+            try
+            {
+            	size = 0;
+                while ((data = input.read()) > -1) {
+                    
+                	if (data == '\n') break;
+                    buffer[size++] = (byte) data;
+                }
+                
+                response = new String(buffer, 0, size);
+                this.response = response;
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * Get response from serial port
+     * @return
+     */
+    public String getResponse() {
+    	return this.response;
+    }
 }
