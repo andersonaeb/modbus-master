@@ -1,7 +1,7 @@
 package gui;
 
-import gui.elements.Element;
 import gui.elements.ElementFactory;
+import gui.elements.base.Element;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -61,11 +61,16 @@ public class Environment extends JPanel {
 		}
 	}
 
-	public void addElement(String name, int type, int regDest, int bitDest) {
+	public void addElement(String name, int type, int regDestView, int bitDestView) {
+		this.addElement(name, type, regDestView, bitDestView, 0, 0);
+	}
+	
+	public void addElement(String name, int type, int regDestView, int bitDestView, int regDestCtrl, int bitDestCtrl) {
 
 		Element e = ElementFactory.get(type);
 		e.setLabel(name);
-		e.setAddress(regDest, bitDest);
+		e.setAddressView(regDestView, bitDestView);
+		e.setAddressControl(regDestCtrl, bitDestCtrl);
 		e.render();
 
 		Color color;

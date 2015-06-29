@@ -1,4 +1,4 @@
-package gui.elements;
+package gui.elements.base;
 
 import java.awt.BorderLayout;
 
@@ -7,15 +7,21 @@ import javax.swing.JPanel;
 
 public abstract class Element {
 
-	protected int regDest;
+	protected int regDestView;
 	
-	protected int bitDest;
+	protected int bitDestView;
+	
+	protected int regDestCtrl;
+	
+	protected int bitDestCtrl;
 	
 	protected String label;
 
 	protected JPanel content;
 	
-	protected int value;
+	protected int valueView;
+	
+	protected int valueControl;
 	
 	public Element() {
 		this.content = new JPanel();
@@ -27,9 +33,14 @@ public abstract class Element {
 		this.label = label;
 	}
 	
-	public void setAddress(int regDest, int bitDest) {
-		this.regDest = regDest;
-		this.bitDest = bitDest;	
+	public void setAddressView(int regDest, int bitDest) {
+		this.regDestView = regDest;
+		this.bitDestView = bitDest;	
+	}
+	
+	public void setAddressControl(int regDest, int bitDest) {
+		this.regDestCtrl = regDest;
+		this.bitDestCtrl = bitDest;	
 	}
 	
 	public String getLabel() {

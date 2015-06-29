@@ -64,22 +64,6 @@ public class MainWindow extends JFrame {
 		
 		this.content.add(new FormConnect());
 		
-		this.content.add(new House());
-		
-		JPanel p = new JPanel();
-		
-		this.f = new JTextField("0 1", 30);
-		p.add(this.f);
-		
-		JButton b = new JButton("Conectar");
-		b.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Controller.getInstance().getModbusMaster().run(f.getText());
-			}
-		});
-		p.add(b);
-		this.content.add(p);
-		
+		this.content.add(new House());		
 	}
 }
